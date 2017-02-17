@@ -1,0 +1,33 @@
+version: '2'
+services:
+  nats:
+    # https://hub.docker.com/_/nats/
+    image: nats
+    ports:
+    - 4222:4222
+    - 8222:8222
+    - 6222:6222
+
+  listener:
+    # https://github.com/shadiakiki1986/nats-cli
+    build:
+      context: listener
+      dockerfile: Dockerfile
+    command:
+    - "1"
+    - sub
+    - foo
+    depends_on:
+    - nats
+
+  publisher:
+    build:
+      context: listener
+      dockerfile: Dockerfile
+    command:
+    - "2"
+    - pub
+    - foo
+    - "Marhaba!"
+    depends_on:
+    - listener
